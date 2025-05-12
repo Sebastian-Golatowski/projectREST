@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "How to run:\r 1. instal dep. (npm install)\r 2. create .env file\r     - DATABASE_URL=\"\"\r     - JWT_SECRET_KEY=\"\"\r     - GOOGLE_API_KEY=\"\"\r 3. create/update db (npx prisma migrate)\r 3. run server (npm start)",
   "main": "server.js",
   "scripts": {
@@ -13,6 +14,7 @@
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "bcryptjs": "^3.0.2",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
