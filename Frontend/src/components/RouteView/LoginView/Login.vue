@@ -1,15 +1,16 @@
 <template>
-
+  <Form/>
 </template>
 <script>
-  export default {
-    components: {},
-    data() {
-        return({
+import Form from './View/Form.vue'
+export default {
+  components: {Form},
+  data() {
+    return({
 
-        })
-    }
+    })
   }
+}
 </script>
 <style scoped>
     
