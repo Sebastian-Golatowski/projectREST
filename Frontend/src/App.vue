@@ -17,7 +17,11 @@ export default {
     })
   },
   created() {
+<<<<<<< Updated upstream
     this.$router.push('/login')
+=======
+    this.$router.push('/main/landing')
+>>>>>>> Stashed changes
     this.$nextTick(()=> {
       //handle user storage and set token + expire date
     })
