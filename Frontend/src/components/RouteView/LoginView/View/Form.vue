@@ -17,15 +17,33 @@
         :modelValue="password"
         :handleInput="updatePassword"
       />
+      <template v-if="isRegister">
+        <Input
+          id="confirm_password"
+          label="CONFIRM PASSWORD"
+          type="password"
+          placeholder="Confirm password"
+          :modelValue="confirmPassword"
+          :handleInput="updatePasswordConfirm"
+        />
+      </template>
       <button 
         type="submit" 
         class="auth-button"
         @click.prevent="handleLogin"
-      >LOG IN</button>
-      <div class="auth-link">
-        Don't have an account?
-        <a href="#" @click.prevent="goToRegister">Register Now</a>
-      </div>
+      >{{isRegister ? 'Register' : 'Log In'}}</button>
+      <template v-if="!isRegister">
+        <div class="auth-link">
+          Don't have an account?
+          <a href="#" @click.prevent="goToRegister(true)">Register Now</a>
+        </div>
+      </template>
+      <template v-else>
+        <div class="auth-link">
+          Already have an account?
+          <a href="#" @click.prevent="goToRegister(false)">Login</a>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -37,8 +55,10 @@ export default {
   components: { Input },
   data() {
     return {
+      isRegister: false,
       username: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     }
   },
   methods: {
@@ -48,15 +68,25 @@ export default {
     updatePassword(value) {
       this.password = value
     },
+    updatePasswordConfirm(value) {
+      this.confirmPassword = value
+    },
     handleLogin() {
-      if (!this.username || !this.password) {
+      if (this.isRegister ? (!this.username || !this.password || !this.confirmPassword) : (!this.username || !this.password)) {
         alert('Pola wypełnij panie')
         return
       }
-      console.log('Logging in with', this.username, this.password)
+      if (this.isRegister) {
+        // registerin user
+        console.log('Registering with', this.username, this.password, this.confirmPassword)
+      } else {
+        // loggin user
+        console.log('Logging in with', this.username, this.password)
+      }
+      
     },
-    goToRegister() {
-      console.log('Go to registration view')
+    goToRegister(state) {
+      this.isRegister = state
     }
   }
 }
@@ -81,7 +111,6 @@ export default {
   margin: 0 auto;
   background-color: var(--main-element-bg);
   padding: 2vw;
-  border-radius: 0.5vw;
 }
 
 .auth-button {

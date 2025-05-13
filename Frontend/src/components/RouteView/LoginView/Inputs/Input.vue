@@ -47,7 +47,6 @@ export default {
   font-size: 1vw;
   padding: 0.8vw;
   border: none;
-  border-radius: 0.3vw;
   outline: none;
   transition: background-color 0.3s ease;
 }
