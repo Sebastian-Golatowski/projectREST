@@ -1,49 +1,58 @@
 <template>
-    <div class="input-box">
+  <div class="input-container">
     <label :for="id">{{ label }}</label>
     <input
       :id="id"
       :type="type"
       :placeholder="placeholder"
-      v-model="modelValue"
-      @input=""
-      
+      :value="modelValue"
+      @input="handleInput($event.target.value)"
+      class="form-input"
     />
   </div>
 </template>
+
 <script>
-  export default {
-    props: {
-      oninput: Function,
-      placeholder: String,
-      header: String,
+export default {
+  props: {
+    id: String,
+    label: String,
+    type: {
+      type: String,
+      default: 'text'
     },
-    data() {
-        return({
-
-        })
-    }
+    placeholder: String,
+    modelValue: [String, Number],
+    handleInput: Function
   }
+}
 </script>
+
 <style scoped>
-.input-box {
-  margin-bottom: 20px;
+.input-container {
+  margin-bottom: 1.5vw;
 }
 
-.input-box label {
+.input-container label {
   display: block;
-  font-size: 10px;
-  color: #ccc;
-  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8vw;
+  margin-bottom: 0.5vw;
 }
 
-.input-box input {
+.form-input {
   width: 100%;
-  padding: 10px;
-  background-color: #2e2e2e;
-  border: none;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
   color: white;
-  font-size: 14px;
+  font-size: 1vw;
+  padding: 0.8vw;
+  border: none;
+  border-radius: 0.3vw;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.form-input:focus {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 </style>

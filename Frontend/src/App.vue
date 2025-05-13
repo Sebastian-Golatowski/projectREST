@@ -17,7 +17,7 @@ export default {
     })
   },
   created() {
-    this.$router.push('/main/landing')
+    this.$router.push('/Login')
     this.$nextTick(()=> {
       //handle user storage and set token + expire date
     })

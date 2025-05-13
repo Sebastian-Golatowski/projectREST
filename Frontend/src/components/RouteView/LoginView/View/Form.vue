@@ -1,124 +1,120 @@
 <template>
- <div class="login-box">
-    <h2>Book Finder</h2>
-    <form @submit.prevent="handleLogin">
+  <div class="login-container">
+    <h2 class="page-title">Book Finder</h2>
+    <div class="auth-box">
       <Input
         id="username"
         label="USERNAME"
         placeholder="Enter username"
-        v-model="username"
-        :input="handleInput"
+        :modelValue="username"
+        :handleInput="updateUsername"
       />
       <Input
         id="password"
         label="PASSWORD"
         type="password"
         placeholder="Enter password"
-        v-model="password"
+        :modelValue="password"
+        :handleInput="updatePassword"
       />
-      <button type="submit" class="login-btn">LOG IN</button>
-    </form>
-    <div class="register">
-      Don't have an account?
-      <a href="#" @click.prevent="goToRegister">Register Now</a>
+      <button 
+        type="submit" 
+        class="auth-button"
+        @click.prevent="handleLogin"
+      >LOG IN</button>
+      <div class="auth-link">
+        Don't have an account?
+        <a href="#" @click.prevent="goToRegister">Register Now</a>
+      </div>
     </div>
   </div>
 </template>
+
 <script>
 import Input from '../Inputs/Input.vue'
-  export default {
-  name: 'LoginForm',
+
+export default {
   components: { Input },
   data() {
     return {
       username: '',
       password: ''
-    };
+    }
   },
   methods: {
+    updateUsername(value) {
+      this.username = value
+    },
+    updatePassword(value) {
+      this.password = value
+    },
     handleLogin() {
       if (!this.username || !this.password) {
-        alert('Wypełnij pola.');
-        return;
+        alert('Pola wypełnij panie')
+        return
       }
-      console.log('Logging in with', this.username, this.password);
-  
+      console.log('Logging in with', this.username, this.password)
     },
     goToRegister() {
-      console.log('Go to registration view');
+      console.log('Go to registration view')
     }
   }
-};
+}
 </script>
+
 <style scoped>
-   body {
-  background-color: #0f0f0f;
+.login-container {
+  width: 100%;
+  padding: 2vw;
 }
 
-.login-box {
-  background-color: #1c1c1c;
-  padding: 40px 30px;
-  border-radius: 10px;
-  width: 300px;
+.page-title {
   color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  margin: 100px auto;
-}
-
-.login-box h2 {
+  font-size: 2.5vw;
+  font-weight: 500;
+  margin-bottom: 2vw;
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 22px;
-  font-weight: bold;
 }
 
-.input-box {
-  margin-bottom: 20px;
+.auth-box {
+  width: calc((100% - 10vw) / 3);
+  margin: 0 auto;
+  background-color: var(--main-element-bg);
+  padding: 2vw;
+  border-radius: 0.5vw;
 }
 
-.input-box label {
-  display: block;
-  font-size: 10px;
-  color: #ccc;
-  margin-bottom: 5px;
-}
-
-.input-box input {
+.auth-button {
   width: 100%;
-  padding: 10px;
-  background-color: #2e2e2e;
-  border: none;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 14px;
-}
-
-.login-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: transparent;
+  font-size: 1vw;
+  padding: 0.8vw;
   border: none;
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
   cursor: pointer;
-  margin: 20px 0 10px;
+  transition: background-color 0.3s ease;
+  margin-top: 1.5vw;
 }
 
-.register {
+.auth-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.auth-link {
   text-align: center;
-  font-size: 12px;
-  color: #888;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8vw;
+  margin-top: 1.5vw;
 }
 
-.register a {
+.auth-link a {
   color: white;
-  font-weight: bold;
   text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.5vw;
 }
 
-.register a:hover {
+.auth-link a:hover {
   text-decoration: underline;
 }
-
 </style>
