@@ -50,7 +50,7 @@
 
 <script>
 import Input from '../Inputs/Input.vue'
-
+import {useNotificationsStorage} from '@/storage/notifications'
 export default {
   components: { Input },
   data() {
@@ -58,7 +58,8 @@ export default {
       isRegister: false,
       username: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      notifications: useNotificationsStorage()
     }
   },
   methods: {
@@ -73,9 +74,12 @@ export default {
     },
     handleLogin() {
       if (this.isRegister ? (!this.username || !this.password || !this.confirmPassword) : (!this.username || !this.password)) {
-        alert('Pola wypełnij panie')
+        this.notifications.addNotification({
+          message: 'Fulfill the data first.'
+        })
         return
       }
+      
       if (this.isRegister) {
         // registerin user
         console.log('Registering with', this.username, this.password, this.confirmPassword)

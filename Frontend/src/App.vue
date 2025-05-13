@@ -1,4 +1,5 @@
 <template>
+  <Notifications/>
   <RouterView />
 </template>
 <script>
@@ -7,13 +8,17 @@ import {useBaseStorage} from '@/storage/base'
 import {useUserStorage} from '@/storage/user'
 import {useBooksStorage} from '@/storage/books'
 import {useLandingStorage} from '@/storage/landing'
+import {useNotificationsStorage} from '@/storage/notifications'
+import Notifications from '@/components/Notifications.vue'
 export default {
+  components: {Notifications}, 
   data() {
     return({
       base: useBaseStorage(),
       user: useUserStorage(),
       books: useBooksStorage(),
-      landing: useLandingStorage()
+      landing: useLandingStorage(),
+      notifications: useNotificationsStorage()
     })
   },
   created() {
