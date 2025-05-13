@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import {tokenGetter, tokenMaker} from "../backedLogic/tokenFunc.js"
+import {userInfo, tokenMaker} from "../backedLogic/tokenFunc.js"
 
 const prisma = new PrismaClient();
 const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -65,9 +65,9 @@ export const login = async (req, res) =>{
 }
 
 export const me = async (req, res) =>{
-
-  const {id, username} = await tokenGetter(req, res);
+  const {id, username} = await userInfo(req, res);
   if(!id) return
+  
   return res.status(200).json({id, username})
 }
 

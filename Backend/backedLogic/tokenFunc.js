@@ -1,45 +1,47 @@
 import jwt from "jsonwebtoken";
 
-export const tokenGetter = async (req, res) => {
+export const tokenGetter = (req) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
-    if (!authHeader) {
-        return res
-            .status(401)
-            .json({ message: "Authorization header missing" });
-    }
-
-    if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-        return res
-            .status(401)
-            .json({ message: "Invalid Authorization format" });
+    if (!authHeader || typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+        throw new Error("Invalid or missing Authorization header");
     }
 
     const token = authHeader.slice(7).trim();
     if (!token) {
-        return res.status(401).json({ message: "Bearer token is empty" });
+        throw new Error("Bearer token is empty");
     }
 
-    let payload;
-    try {
-        payload = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (e) {
-        return res
-            .status(401)
-            .json({ message: `Token verification failed -> ${e}` });
-    }
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!payload?.id || !payload?.username) {
-        res.status(401).json({
-            message: "Token missing required user info (id, username)",
-        });
-        return;
+        throw new Error("Token missing required user info (id, username)");
     }
 
-    return{
-        id: payload.id,
-        username: payload.username,
-    };
+    return payload;
+};
+
+export const tokenMiddleware = (req, res, next) => {
+    try {
+        const payload = tokenGetter(req);
+        req.userId = payload.id;
+        req.username = payload.username;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: err.message });
+    }
+};
+
+export const userInfo = (req, res) => {
+    try {
+        const payload = tokenGetter(req);
+        return res.status(200).json({
+            id: payload.id,
+            username: payload.username,
+        });
+    } catch (err) {
+        return res.status(401).json({ message: err.message });
+    }
 };
 
 export const tokenMaker = (id, username)=>{

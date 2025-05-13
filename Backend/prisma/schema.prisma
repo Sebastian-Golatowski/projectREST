@@ -20,23 +20,21 @@ model User {
   createdAt DateTime @default(now())
 
   books Book[] 
-  notes Note[] 
 }
 
 model Book {
   id       String   @id @default(uuid())
   googleId String
   userId   String
+  
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   notes Note[] 
 }
 
 model Note {
   id     String @id @default(uuid())
-  userId String
+  body  String
   bookId String
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 }
