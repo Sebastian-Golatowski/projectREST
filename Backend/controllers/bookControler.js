@@ -15,12 +15,13 @@ export const search = async (req, res) =>{
       params: {
         q: `intitle:${title}`,
         printType: 'books',
+        maxResults:40,
         key: process.env.GOOGLE_API_KEY,
       },
     });
 
     const books = response.data.items || [];
-
+    // return res.json(books)
     // const formattedBooks = books.map((item) => {
     //   return {
     //     title: item.volumeInfo.title,
@@ -36,7 +37,7 @@ export const search = async (req, res) =>{
     const formattedBooks = books
     .filter(item => {
         const lang = item.volumeInfo?.language;
-        return lang === 'en' || lang === 'pl';
+        return (lang === 'en' || lang === 'pl') //&& lang !== null;
     })
     .map(item => ({
         title: item.volumeInfo.title,
@@ -46,6 +47,7 @@ export const search = async (req, res) =>{
         rating: item.volumeInfo.averageRating || null,
         description: item.volumeInfo.description || null,
         ratingsCount: item.volumeInfo.ratingsCount || 0,
+        language:item.volumeInfo?.language,
     }));
 
     formattedBooks.sort((a, b) => b.ratingsCount - a.ratingsCount);
@@ -53,7 +55,7 @@ export const search = async (req, res) =>{
     return res.status(200).json(formattedBooks);
   } catch (error) {
     console.error('Error fetching books:', error.message);
-    return res.status(500).json({ error: 'Failed to fetch books' });
+    return res.status(500).json({ message: 'Failed to fetch books' });
   }
 
 }
@@ -63,11 +65,11 @@ export const assigne = async (req, res) => {
     const { userId } = req;
   
     if (!googleId) {
-      return res.status(400).json({ error: 'Missing Google Book ID' });
+      return res.status(400).json({ message: 'Missing Google Book ID' });
     }
   
     if (!userId) {
-      return res.status(401).json({ error: 'Missing user ID' });
+      return res.status(401).json({ message: 'Missing user ID' });
     }
   
     try {
@@ -75,46 +77,53 @@ export const assigne = async (req, res) => {
         params: {
           key: process.env.GOOGLE_BOOKS_API_KEY,
         },
-        validateStatus: () => true, 
+        validateStatus: () => true, // Don't throw for non-2xx
       });
-  
+    
       if (response.status === 200) {
         const book = await prisma.book.findFirst({
-            where:{
-                userId:userId,
-                googleId:googleId
-            }
-        })
-
-        if(book) return res.status(400).json({message:"Book already added"})
-
-        const NewBook = await prisma.book.create({
+          where: {
+            userId,
+            googleId
+          }
+        });
+    
+        if (book) return res.status(400).json({ message: "Book already added" });
+    
+        const newBook = await prisma.book.create({
           data: {
             userId,
             googleId,
           },
         });
-  
-        return res.status(201).json({NewBook});
-
-      } else if (response.status === 404) {
-        return res.status(404).json({message: 'Book not found in Google Books'});
+    
+        await prisma.note.create({
+          data: {
+            bookId: newBook.id,
+            body: ""
+          }
+        });
+    
+        return res.status(201).json({ newBook });
+    
       } else {
-        return res.status(response.status).json({message: 'Error occurred while fetching book from Google'});
+        // Treat *any* non-200 as "not found"
+        return res.status(404).json({ message: 'Book not found in Google Books' });
       }
-  
-    } catch (error) {
-      console.error('Error during book assignment:', error.message);
-      return res.status(500).json({
-        error: 'Internal Server Error',
-        details: error.message,
-      });
+    
+    } catch (err) {
+      // Catch network errors, etc., and force 404
+      return res.status(404).json({ message: 'Book not found (network error)' });
     }
   };
 
 export const deAssigne = async (req, res) =>{
     const { bookId } = req.params;
     const {userId} = req;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Missing user ID' });
+    }
 
     const book = await prisma.book.createMany({
         where:{
@@ -123,7 +132,7 @@ export const deAssigne = async (req, res) =>{
         }
     })
 
-    if(!bookId) return res.status(404).json({message:"Book does not exist"})
+    if(!book) return res.status(404).json({message:"Book does not exist"})
 
     try{
     await prisma.book.deleteMany({
@@ -145,9 +154,6 @@ export const userBooks = async (req, res) =>{
     const allBooks = await prisma.book.findMany({
         where:{
             userId:userId
-        },
-        include:{
-            notes:true
         }
     })
     const bookDetailsPromises = allBooks.map(async (book) => {
@@ -159,8 +165,6 @@ export const userBooks = async (req, res) =>{
           });
     
           const item = response.data;
-          const lang = item.volumeInfo?.language;
-
     
           return {
             title: item.volumeInfo.title,
@@ -171,11 +175,9 @@ export const userBooks = async (req, res) =>{
             description: item.volumeInfo.description || null,
             ratingsCount: item.volumeInfo.ratingsCount || 0,
             bookId: book.id,
-            notes: book.note?.body || null
           };
-        } catch (error) {
+        } catch (e) {
           console.error(`Error fetching book with ID ${book.googleId}:`);
-          return null;
         }
       });
     

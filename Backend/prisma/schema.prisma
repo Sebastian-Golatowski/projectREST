@@ -27,6 +27,7 @@ model Book {
   googleId String
   userId   String
   
+  @@unique([googleId, userId])
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   notes Note[] 
 }
