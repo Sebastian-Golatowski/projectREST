@@ -72,7 +72,7 @@ export default {
     updatePasswordConfirm(value) {
       this.confirmPassword = value
     },
-    handleLogin() {
+    async handleLogin() {
       if (this.isRegister ? (!this.username || !this.password || !this.confirmPassword) : (!this.username || !this.password)) {
         this.notifications.addNotification({
           message: 'Fulfill the data first.'
@@ -81,9 +81,38 @@ export default {
       }
       
       if (this.isRegister) {
+                let headersList = {
+        "Content-Type": "application/json"
+        }
+
+        let bodyContent = JSON.stringify({
+          "username": this.username,
+          "password": this.password,
+          "secPassword": this.confirmPassword
+        });
+        const baseURL = import.meta.env.VITE_BACK_SERV;
+        let response = await fetch(`http://localhost:3000/api/user/register`, { 
+          method: "POST",
+          body: bodyContent,
+          headers: headersList
+        }); 
         // registerin user
-        console.log('Registering with', this.username, this.password, this.confirmPassword)
+        console.log('Registering with', this.username, this.password, this.confirmPassword,)
       } else {
+        let headersList = {
+        "Content-Type": "application/json"
+        }
+
+        let bodyContent = JSON.stringify({
+          "username": this.username,
+          "password": this.password
+        });
+
+        let response = await fetch(`${import.meta.env.VITE_BACK_SERV}/api/user/login`, { 
+          method: "POST",
+          body: bodyContent,
+          headers: headersList
+        }); 
         // loggin user
         console.log('Logging in with', this.username, this.password)
       }
