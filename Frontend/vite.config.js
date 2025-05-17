@@ -14,7 +14,6 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        // Keep the same file name for the CSS output
         assetFileNames: (assetInfo) => {
           if (assetInfo.name == 'style.css') {
             return 'css/style.css';
@@ -24,5 +23,13 @@ export default defineConfig({
       },
     },
   },
-  base: './'
+  base: './',
+  server: {
+    proxy: {
+      '^/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
+    }
+  }
 })

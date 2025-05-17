@@ -81,8 +81,8 @@ export default {
       }
       
       if (this.isRegister) {
-                let headersList = {
-        "Content-Type": "application/json"
+        let headersList = {
+          "Content-Type": "application/json"
         }
 
         let bodyContent = JSON.stringify({
@@ -91,16 +91,33 @@ export default {
           "secPassword": this.confirmPassword
         });
         
-         let response = await fetch(`${import.meta.env.VITE_BACK_SERV}/api/user/register`, { 
+         let res = await fetch(`/api/user/register`, { 
           method: "POST",
           body: bodyContent,
           headers: headersList
         }); 
+
+        if(res.status == 201){
+          let data = await res.json();  // if it's JSON
+          // token = data.token
+          // go to main page
+          console.log(data);
+
+        }
+        else if(res.status == 400){
+          // coś nie tak z podanymi danymi (hało != hasło) lub (hasło się nie wpisuje w regexa)
+        }
+        else if(res.status == 409){
+          // ziutek o podanym username już istnieje
+        }
+        else{
+          // internal server error
+        }
         // registerin user
         console.log('Registering with', this.username, this.password, this.confirmPassword,)
       } else {
         let headersList = {
-        "Content-Type": "application/json"
+          "Content-Type": "application/json"
         }
 
         let bodyContent = JSON.stringify({
@@ -108,11 +125,28 @@ export default {
           "password": this.password
         });
 
-        let response = await fetch(`${import.meta.env.VITE_BACK_SERV}/api/user/login`, { 
+        let res = await fetch(`/api/user/login`, { 
           method: "POST",
           body: bodyContent,
           headers: headersList
         }); 
+
+                
+        if(res.status == 200){
+          let data = await res.json();  // if it's JSON
+          // token = data.token
+          // go to main page
+          console.log(data);
+
+        }
+        else if(res.status == 401){
+          // złe login lub hasło
+
+        }
+        else{
+          // internal server error
+        }
+
         // loggin user
         console.log('Logging in with', this.username, this.password)
       }
