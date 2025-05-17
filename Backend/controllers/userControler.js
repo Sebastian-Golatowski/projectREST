@@ -9,7 +9,7 @@ export const register = async (req, res) =>{
     const { username, password, secPassword} = req.body;
 
     if (!username || !password || !secPassword) {
-      return res.status(400).json({ message: "Username and password are required" });
+      return res.status(400).json({ message: "Username, password and confirmation are required" });
     }
 
     const user = await prisma.user.findFirst({

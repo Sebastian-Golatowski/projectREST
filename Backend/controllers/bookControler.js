@@ -88,7 +88,7 @@ export const assigne = async (req, res) => {
           }
         });
     
-        if (book) return res.status(400).json({ message: "Book already added" });
+        if (book) return res.status(409).json({ message: "Book already added" });
     
         const newBook = await prisma.book.create({
           data: {
@@ -125,7 +125,7 @@ export const deAssigne = async (req, res) =>{
       return res.status(401).json({ error: 'Missing user ID' });
     }
 
-    const book = await prisma.book.createMany({
+    const book = await prisma.book.findMany({
         where:{
             bookId:bookId,
             userId:userId
@@ -144,18 +144,23 @@ export const deAssigne = async (req, res) =>{
     return res.status(200).json({message: "Book deleted"})
 
     }catch{
-        return res.status(500)
+        return res.status(500).json({ message: "Failed to delete book" });
     }
 }
 
 export const userBooks = async (req, res) =>{
     const {userId} = req;
 
+    if (!userId) {
+      return res.status(401).json({ error: 'Missing user ID' });
+    }
+
     const allBooks = await prisma.book.findMany({
         where:{
             userId:userId
         }
     })
+    
     const bookDetailsPromises = allBooks.map(async (book) => {
         try {
           const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${book.googleId}`, {

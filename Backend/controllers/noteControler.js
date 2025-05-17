@@ -11,12 +11,11 @@ export const edit = async (req, res) =>{
         return res.status(401).json({ message: "Missing user ID" });
     }
 
-    if(!body){
-        return res.status(400).json({message:"No body given"});
+    if (!body) {
+        return res.status(400).json({ message: "Missing note content (body)" });
     }
-
-    if(!bookId){
-        return res.status(400).json({message:"No body given"});
+    if (!bookId) {
+        return res.status(400).json({ message: "Missing bookId" });
     }
 
     const note = await prisma.note.findMany({
@@ -25,8 +24,8 @@ export const edit = async (req, res) =>{
         }
     })
 
-    if(!note){
-        return res.status(404).json({message: "Note not found"})
+    if (!note.length) {
+        return res.status(404).json({ message: "Note not found" });
     }
 
     await prisma.note.updateMany({
@@ -45,7 +44,7 @@ export const getNote = async (req, res) =>{
     const { bookId } = req.params;
 
     if(!bookId){
-        return res.status(400).json({message:"Bad Request"})
+        return res.status(400).json({ message: "Missing bookId parameter" });
     }
 
     const book = await prisma.book.findFirst({
@@ -55,7 +54,7 @@ export const getNote = async (req, res) =>{
     })
 
     if(!book){
-        return res.status(400).json({message:"No book with this Id"})
+        return res.status(404).json({ message: "Book not found" });
     }
 
     const note = await prisma.note.findFirst({
@@ -63,6 +62,10 @@ export const getNote = async (req, res) =>{
             bookId:bookId
         }
     })
+
+    if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+    }
 
     return res.status(200).json({note});
 }
