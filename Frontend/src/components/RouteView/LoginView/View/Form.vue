@@ -90,8 +90,8 @@ export default {
           "password": this.password,
           "secPassword": this.confirmPassword
         });
-        const baseURL = import.meta.env.VITE_BACK_SERV;
-        let response = await fetch(`http://localhost:3000/api/user/register`, { 
+        
+         let response = await fetch(`${import.meta.env.VITE_BACK_SERV}/api/user/register`, { 
           method: "POST",
           body: bodyContent,
           headers: headersList
