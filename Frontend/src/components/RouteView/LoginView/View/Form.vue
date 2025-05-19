@@ -148,7 +148,7 @@ export default {
 
 .auth-button {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--main-children-bg);
   color: white;
   font-size: 1vw;
   padding: 0.8vw;
@@ -159,7 +159,7 @@ export default {
 }
 
 .auth-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--main-children-bg-hover);
 }
 
 .auth-link {

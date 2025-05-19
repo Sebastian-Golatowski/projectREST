@@ -15,4 +15,6 @@ html, body {
 
 :root {
   --main-element-bg: rgba(255, 255, 255, 0.05);
+  --main-children-bg: rgba(255, 255, 255, 0.1);
+  --main-children-bg-hover: rgba(255, 255, 255, 0.2);
 }
