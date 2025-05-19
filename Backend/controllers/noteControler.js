@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import {tokenGetter} from "../backedLogic/tokenFunc.js"
+import { isOwner } from "../backedLogic/isOwner.js";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +17,10 @@ export const edit = async (req, res) =>{
     if (!bookId) {
         return res.status(400).json({ message: "Missing bookId" });
     }
+
+    const is = isOwner(bookId, userId, res) ;
+    if(!is) return
+
 
     const note = await prisma.note.findMany({
         where:{

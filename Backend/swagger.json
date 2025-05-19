@@ -111,7 +111,7 @@
         },
         "responses": {
           "201": { "description": "Book assigned to user" },
-          "400": { "description": "Missing Google Book ID" },
+          "400": { "description": "Missing or Wrong Google Book ID" },
           "401": { "description": "Missing user ID" },
           "404": { "description": "Book not found" },
           "409": { "description": "Book already added" }
@@ -144,6 +144,7 @@
         ],
         "responses": {
           "200": { "description": "Book deleted" },
+          "403": { "description": "User is not owner" },
           "404": { "description": "Book does not exist" },
           "500": { "description": "Failed to delete book" }
         }
@@ -172,6 +173,7 @@
         "responses": {
           "200": { "description": "Note updated successfully" },
           "400": { "description": "Missing note content or bookId" },
+          "403": { "description": "User is not owner" },
           "404": { "description": "Note not found" },
           "401": { "description": "Missing user ID" }
         }

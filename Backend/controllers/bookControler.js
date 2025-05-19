@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import axios from 'axios';
+import { isOwner } from "../backedLogic/isOwner.js";
 
 const prisma = new PrismaClient();
 
@@ -75,7 +76,7 @@ export const assigne = async (req, res) => {
     try {
       const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${googleId}`, {
         params: {
-          key: process.env.GOOGLE_BOOKS_API_KEY,
+          key: process.env.GOOGLE_API_KEY,
         },
         validateStatus: () => true, // Don't throw for non-2xx
       });
@@ -125,22 +126,26 @@ export const deAssigne = async (req, res) =>{
       return res.status(401).json({ error: 'Missing authentication' });
     }
 
-    const book = await prisma.book.findMany({
+    const book = await prisma.book.findFirst({
         where:{
-            bookId:bookId,
-            userId:userId
+            id:bookId
         }
     })
 
     if(!book) return res.status(404).json({message:"Book not found"});
 
+    
+    const is = isOwner(bookId, userId, res) ;
+    if(!is) return
+
     try{
-    await prisma.book.deleteMany({
-        where:{
-            bookId:bookId,
-            userId:userId
-        }
-    })
+      await prisma.book.deleteMany({
+          where:{
+              id:bookId,
+              userId:userId
+          }
+      })
+
     return res.status(200).json({message: "Book removed from collection"})
 
     }catch{
