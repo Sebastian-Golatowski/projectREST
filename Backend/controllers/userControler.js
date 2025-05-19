@@ -9,7 +9,7 @@ export const register = async (req, res) =>{
     const { username, password, secPassword} = req.body;
 
     if (!username || !password || !secPassword) {
-      return res.status(400).json({ message: "Username, password and confirmation are required" });
+      return res.status(400).json({ message: "Username, password and password confirmation are required" });
     }
 
     const user = await prisma.user.findFirst({
@@ -23,11 +23,11 @@ export const register = async (req, res) =>{
     }
 
     if(password != secPassword){
-      return res.status(400).json({message:"Passwords are not matching"})
+      return res.status(400).json({message:"Passwords do not match"})
     }
 
     if(!pattern.test(password)){
-      return res.status(400).json({message:"Passwords does not meet requirements"})
+      return res.status(400).json({message:"Password does not meet the requirements"})
     }
     
     const newUser = await prisma.user.create({
@@ -39,7 +39,7 @@ export const register = async (req, res) =>{
 
     const token = tokenMaker(newUser.id, newUser.username)
 
-    return res.status(201).json({message:"User created", token:token})
+    return res.status(201).json({message:"User created successfully", token:token})
 }
 
 export const login = async (req, res) =>{
@@ -56,7 +56,7 @@ export const login = async (req, res) =>{
     })
     
     if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const token = tokenMaker(user.id, user.username)

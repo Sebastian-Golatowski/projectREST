@@ -7,7 +7,7 @@ export const search = async (req, res) =>{
     const { title } = req.params;
 
   if (!title) {
-    return res.status(400).json({ error: 'Missing "title" query parameter' });
+    return res.status(400).json({ message: 'Missing "title" query parameter' });
   }
 
   try {
@@ -88,7 +88,7 @@ export const assigne = async (req, res) => {
           }
         });
     
-        if (book) return res.status(409).json({ message: "Book already added" });
+        if (book) return res.status(409).json({ message: "This book is already in your collection" });
     
         const newBook = await prisma.book.create({
           data: {
@@ -122,7 +122,7 @@ export const deAssigne = async (req, res) =>{
     const {userId} = req;
 
     if (!userId) {
-      return res.status(401).json({ error: 'Missing user ID' });
+      return res.status(401).json({ error: 'Missing authentication' });
     }
 
     const book = await prisma.book.findMany({
@@ -132,7 +132,7 @@ export const deAssigne = async (req, res) =>{
         }
     })
 
-    if(!book) return res.status(404).json({message:"Book does not exist"})
+    if(!book) return res.status(404).json({message:"Book not found"});
 
     try{
     await prisma.book.deleteMany({
@@ -141,10 +141,10 @@ export const deAssigne = async (req, res) =>{
             userId:userId
         }
     })
-    return res.status(200).json({message: "Book deleted"})
+    return res.status(200).json({message: "Book removed from collection"})
 
     }catch{
-        return res.status(500).json({ message: "Failed to delete book" });
+        return res.status(500).json({ message: "Failed to remove book" });
     }
 }
 
@@ -152,7 +152,7 @@ export const userBooks = async (req, res) =>{
     const {userId} = req;
 
     if (!userId) {
-      return res.status(401).json({ error: 'Missing user ID' });
+      return res.status(401).json({ error: 'Missing authentication' });
     }
 
     const allBooks = await prisma.book.findMany({

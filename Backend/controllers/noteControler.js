@@ -12,7 +12,7 @@ export const edit = async (req, res) =>{
     }
 
     if (!body) {
-        return res.status(400).json({ message: "Missing note content (body)" });
+        return res.status(400).json({ message: "Note content (body) is required" });
     }
     if (!bookId) {
         return res.status(400).json({ message: "Missing bookId" });
@@ -37,7 +37,7 @@ export const edit = async (req, res) =>{
         }
     })
 
-    return res.status(200).json({message:"note updated succesfully"})
+    return res.status(200).json({message:"Note updated successfully"})
 }
 
 export const getNote = async (req, res) =>{
