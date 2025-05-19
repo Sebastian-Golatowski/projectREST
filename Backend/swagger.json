@@ -112,7 +112,7 @@
         "responses": {
           "201": { "description": "Book assigned to user" },
           "400": { "description": "Missing or Wrong Google Book ID" },
-          "401": { "description": "Missing user ID" },
+          "401": { "description": "Unauthorized or invalid token" },
           "404": { "description": "Book not found" },
           "409": { "description": "Book already added" }
         }
@@ -212,6 +212,6 @@
   "tags": [
     { "name": "User", "description": "User registration, login, and profile access" },
     { "name": "Books", "description": "Search, assign, and manage user book collection" },
-    { "name": "Notes", "description": "Create and retrieve notes tied to user’s books" }
+    { "name": "Notes", "description": "Create and retrieve notes tied to users books" }
   ]
 }

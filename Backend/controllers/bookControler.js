@@ -84,8 +84,8 @@ export const assigne = async (req, res) => {
       if (response.status === 200) {
         const book = await prisma.book.findFirst({
           where: {
-            userId,
-            googleId
+            userId: userId,
+            googleId: googleId
           }
         });
     
@@ -135,7 +135,7 @@ export const deAssigne = async (req, res) =>{
     if(!book) return res.status(404).json({message:"Book not found"});
 
     
-    const is = isOwner(bookId, userId, res) ;
+    const is = await isOwner(bookId, userId, res) ;
     if(!is) return
 
     try{

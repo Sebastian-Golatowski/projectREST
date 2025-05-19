@@ -18,7 +18,7 @@ export const edit = async (req, res) =>{
         return res.status(400).json({ message: "Missing bookId" });
     }
 
-    const is = isOwner(bookId, userId, res) ;
+    const is = await isOwner(bookId, userId, res) ;
     if(!is) return
 
 
