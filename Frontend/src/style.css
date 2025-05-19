@@ -8,9 +8,10 @@ html, body {
   left: 0;
   background-color: #101011;
   font-family: 'Montserrat', sans-serif;
-  overflow: hidden;
   box-sizing: border-box;
   padding: 5vw;
+  overflow-x: hidden;
+  margin: 0;
 }
 
 :root {

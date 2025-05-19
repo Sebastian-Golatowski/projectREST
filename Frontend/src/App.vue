@@ -10,6 +10,7 @@ import {useBooksStorage} from '@/storage/books'
 import {useLandingStorage} from '@/storage/landing'
 import {useNotificationsStorage} from '@/storage/notifications'
 import Notifications from '@/components/Notifications.vue'
+import { fetchToBackend } from './utils'
 export default {
   components: {Notifications}, 
   data() {
@@ -18,17 +19,43 @@ export default {
       user: useUserStorage(),
       books: useBooksStorage(),
       landing: useLandingStorage(),
-      notifications: useNotificationsStorage()
+      notifications: useNotificationsStorage(),
     })
   },
-  created() {
-    this.$router.push('/Login')
-    this.$nextTick(()=> {
-      //handle user storage and set token + expire date
+  async created() {
+    this.$nextTick(async ()=> {
+      let userResponse = await fetch('/api/user', {
+        method: 'GET',
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem('token') 
+        }
+      })
+      console.log(userResponse);
+      
+      if (userResponse.status == 401) {
+        console.log('pizda');
+        
+        localStorage.removeItem('token')
+        this.$router.push('/login')
+      } else {
+        let data = await userResponse.json()
+        this.user.setUserName(data.username)
+      }
+      
+      
+      let response = await fetch('https://use.fontawesome.com/releases/v5.15.4/js/all.js', {
+        method: 'GET'
+      })
+      let code = await response.text()
+
+      let fontawesomeAPI = document.createElement('script')
+      fontawesomeAPI.type = 'text/javascript'
+      fontawesomeAPI.innerHTML = code
+      document.head.appendChild(fontawesomeAPI)
     })
   },
   updated() {
-    // update expire date + 1 day if it's closer to end
+    
   },
   methods: {
     //update storage when it's needed

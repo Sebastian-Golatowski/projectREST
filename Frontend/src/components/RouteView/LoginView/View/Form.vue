@@ -62,6 +62,9 @@ export default {
       notifications: useNotificationsStorage()
     }
   },
+  mounted() {
+    if (localStorage.getItem('token')) this.$router.push('/main/landing')
+  },  
   methods: {
     updateUsername(value) {
       this.username = value
@@ -96,24 +99,24 @@ export default {
           body: bodyContent,
           headers: headersList
         }); 
-
+        
+        let data = await res.json();  // if it's JSON
+        
+        if (res.status != 201) this.notifications.addNotification(data)
+        
         if(res.status == 201){
-          let data = await res.json();  // if it's JSON
-          // token = data.token
-          // go to main page
-          console.log(data);
-
+          const token = data.token
+          localStorage.setItem('token', token)
+          this.$router.go('/main/landing')
         }
         else if(res.status == 400){
-          // coś nie tak z podanymi danymi (hało != hasło) lub (hasło się nie wpisuje w regexa)
+          document.getElementById('confirm_password').value = ''
+          document.getElementById('password').value = ''
         }
         else if(res.status == 409){
-          // ziutek o podanym username już istnieje
+          document.getElementById('confirm_password').value = ''
+          document.getElementById('password').value = ''
         }
-        else{
-          // internal server error
-        }
-        // registerin user
         console.log('Registering with', this.username, this.password, this.confirmPassword,)
       } else {
         let headersList = {
@@ -131,20 +134,18 @@ export default {
           headers: headersList
         }); 
 
+        let data = await res.json();  // if it's JSON
+        if (res.status != 200) this.notifications.addNotification(data)
                 
         if(res.status == 200){
-          let data = await res.json();  // if it's JSON
-          // token = data.token
-          // go to main page
-          console.log(data);
-
+          const token = data.token
+          localStorage.setItem('token', token)
+          this.$router.go('/main/landing')
         }
         else if(res.status == 401){
           // złe login lub hasło
-
-        }
-        else{
-          // internal server error
+          document.getElementById('username').value = ''
+          document.getElementById('password').value = ''
         }
 
         // loggin user

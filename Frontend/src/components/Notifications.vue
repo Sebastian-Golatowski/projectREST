@@ -6,7 +6,6 @@
                 <div class="text">{{ notification.message }}</div>
             </div>
         </transition-group>
-        
     </div>
 </template>
 <script>

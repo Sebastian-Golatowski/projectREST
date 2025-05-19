@@ -1,7 +1,8 @@
 <template>
     <div class="nav-container">
-        <div class="name">{{ name }}</div>
+        <div class="name">Hi {{ user.name }} | {{ name }}</div>
         <div class="navs">
+            <!-- add icon for each element -->
             <div class="nav-element" v-for="(nav, key) in navigationPanel" @click="HandleNav(nav.path)" :key="key">{{ nav.label }}</div>
             <div class="nav-element" @click="Logout">Logout</div>
         </div>
@@ -9,14 +10,16 @@
     <div class="line"></div>
 </template>
 <script>
+import { useUserStorage } from '../../storage/user';
 export default {
     data() {
         return({
+            user: useUserStorage(),
             name: 'Book Finder',
             navigationPanel: [
                 {
                     label: 'Books',
-                    path: '/'
+                    path: '/landing'
                 },
                 {
                     label: 'My List',
@@ -25,8 +28,12 @@ export default {
             ]
         })
     }, methods: {
+        Logout() {
+            localStorage.removeItem('token')
+            this.$router.push('/login')
+        },
         HandleNav(path) {
-            this.$router.push(path)
+            this.$router.push('/main'+path)
         }
     } 
 }
@@ -63,6 +70,8 @@ export default {
         text-transform: uppercase;
         font-weight: 500;
         font-size: .8vw;
-        opacity: .3;
     }
+
+    .nav-container .navs .nav-element {opacity: .3;}
+    .nav-container .navs .nav-element:hover {opacity: 1;}
 </style>
