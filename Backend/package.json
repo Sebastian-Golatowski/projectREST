@@ -5,7 +5,7 @@
   "description": "How to run:\r 1. instal dep. (npm install)\r 2. create .env file\r     - DATABASE_URL=\"\"\r     - JWT_SECRET_KEY=\"\"\r     - GOOGLE_API_KEY=\"\"\r 3. create/update db (npx prisma migrate)\r 3. run server (npm start)",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "start": "nodemon server.js"
   },
   "keywords": [],
@@ -23,5 +23,11 @@
     "prisma": "^6.7.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "@jest/globals": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
   }
 }
