@@ -1,9 +1,9 @@
-import { register, login } from '../controllers/userControler.js';
+import { register, login, me } from '../controllers/userControler.js';
 import bcrypt from 'bcryptjs';
-import { tokenMaker } from '../backedLogic/tokenFunc.js';
+import { tokenMaker, userInfo  } from '../backedLogic/tokenFunc.js';
 import { PrismaClient } from '@prisma/client';
 
-// === MOCKOWANIE ===
+// MOCKOWANIE
 jest.mock('@prisma/client', () => {
   const mUser = {
     findFirst: jest.fn(),
@@ -18,10 +18,11 @@ jest.mock('bcryptjs', () => ({
 }));
 
 jest.mock('../backedLogic/tokenFunc.js', () => ({
-  tokenMaker: jest.fn()
+  tokenMaker: jest.fn(),
+  userInfo: jest.fn()
 }));
 
-// === FAKE RESPONSE OBIEKT ===
+// FAKE RESPONSE OBIEKT
 const mockRes = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
@@ -29,7 +30,7 @@ const mockRes = () => {
   return res;
 };
 
-// === TESTY REGISTER ===
+// TESTY REGISTER
 describe('register()', () => {
   let res;
   let prisma;
@@ -122,7 +123,7 @@ describe('register()', () => {
   });
 });
 
-// === TESTY LOGIN ===
+// TESTY LOGIN
 describe('login()', () => {
   let res;
   let prisma;
@@ -193,5 +194,45 @@ describe('login()', () => {
       message: "Login successful",
       token: "valid-token"
     });
+  });
+});
+
+// Testy me
+describe('me()', () => {
+  let res;
+
+  beforeEach(() => {
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+    jest.clearAllMocks();
+  });
+
+  it('zwraca 200 i dane użytkownika jeśli token jest poprawny', async () => {
+    userInfo.mockResolvedValue({ id: 1, username: 'testuser' });
+
+    const req = {};
+
+    await me(req, res);
+
+    expect(userInfo).toHaveBeenCalledWith(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      id: 1,
+      username: 'testuser'
+    });
+  });
+
+  it('nie zwraca nic jeśli token jest niepoprawny (brak id)', async () => {
+    userInfo.mockResolvedValue({});
+
+    const req = {};
+
+    await me(req, res);
+
+    expect(userInfo).toHaveBeenCalledWith(req, res);
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
   });
 });
