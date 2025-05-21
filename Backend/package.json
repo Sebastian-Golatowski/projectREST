@@ -5,7 +5,7 @@
   "description": "How to run:\r 1. instal dep. (npm install)\r 2. create .env file\r     - DATABASE_URL=\"\"\r     - JWT_SECRET_KEY=\"\"\r     - GOOGLE_API_KEY=\"\"\r 3. create/update db (npx prisma migrate)\r 3. run server (npm start)",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose",
     "start": "nodemon server.js"
   },
   "keywords": [],
