@@ -29,6 +29,7 @@ export const tokenGetter = (req, res) => {
 export const tokenMiddleware = (req, res, next) => {
     try {
         const payload = tokenGetter(req, res);
+        if(payload.id == undefined) return;
         req.userId = payload.id;
         req.username = payload.username;
         next();

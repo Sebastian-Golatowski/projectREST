@@ -22,18 +22,6 @@ export const search = async (req, res) =>{
     });
 
     const books = response.data.items || [];
-    // return res.json(books)
-    // const formattedBooks = books.map((item) => {
-    //   return {
-    //     title: item.volumeInfo.title,
-    //     googleId: item.id,
-    //     authors: item.volumeInfo.authors || null,
-    //     thumbnail: item.volumeInfo.imageLinks?.thumbnail || null,
-    //     rating: item.volumeInfo.averageRating || null,
-    //     description: item.volumeInfo.description || null,
-    //     ratingsCount: item.volumeInfo.ratingsCount || 0,
-    //   };
-    // });
 
     const formattedBooks = books
     .filter(item => {
