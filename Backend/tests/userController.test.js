@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { tokenMaker, userInfo  } from '../backedLogic/tokenFunc.js';
 import { PrismaClient } from '@prisma/client';
 
-// MOCKOWANIE
+
 jest.mock('@prisma/client', () => {
   const mUser = {
     findFirst: jest.fn(),
@@ -22,7 +22,6 @@ jest.mock('../backedLogic/tokenFunc.js', () => ({
   userInfo: jest.fn()
 }));
 
-// FAKE RESPONSE OBIEKT
 const mockRes = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
@@ -30,7 +29,6 @@ const mockRes = () => {
   return res;
 };
 
-// TESTY REGISTER
 describe('register()', () => {
   let res;
   let prisma;
@@ -123,7 +121,6 @@ describe('register()', () => {
   });
 });
 
-// TESTY LOGIN
 describe('login()', () => {
   let res;
   let prisma;
@@ -197,7 +194,6 @@ describe('login()', () => {
   });
 });
 
-// Testy me
 describe('me()', () => {
   let res;
 
