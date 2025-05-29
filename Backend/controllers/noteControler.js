@@ -19,7 +19,7 @@ export const edit = async (req, res) =>{
     }
 
     const is = await isOwner(bookId, userId, res) ;
-    if(!is) return
+    if(!is) return res.status(403).json({message:"User is not owner"});
 
 
     const note = await prisma.note.findMany({

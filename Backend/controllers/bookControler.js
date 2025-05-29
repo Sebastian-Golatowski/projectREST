@@ -124,7 +124,7 @@ export const deAssigne = async (req, res) =>{
 
     
     const is = await isOwner(bookId, userId, res) ;
-    if(!is) return
+    if(!is) return res.status(403).json({message:"User is not owner"});
 
     try{
       await prisma.book.deleteMany({

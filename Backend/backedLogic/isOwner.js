@@ -10,7 +10,7 @@ export const isOwner = async (bookId, userId, res) => {
         }
     })
 
-    if(!ownerBook) return res.status(403).json({message:"User is not owner"});
+    if(!ownerBook) return false
 
-    return ownerBook;
+    return true;
 }
