@@ -68,15 +68,9 @@ describe('edit()', () => {
   });
 
   it('zwraca 403 gdy użytkownik nie jest właścicielem', async () => {
-    isOwner.mockImplementation(() => {
-      res.status(403).json({ message: "User is not owner" });
-      return false;
-    });
-
+    isOwner.mockReturnValue(false);
     const req = { body: { body: 'tekst', bookId: 1 }, userId: 1 };
-
     await edit(req, res);
-
     expect(res.status).toHaveBeenCalledWith(403);
     expect(res.json).toHaveBeenCalledWith({ message: "User is not owner" });
   });

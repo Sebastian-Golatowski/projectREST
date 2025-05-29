@@ -144,6 +144,17 @@ describe('bookController', () => {
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
+    it('zwraca 403 jeśli użytkownik nie jest właścicielem', async () => {
+      prisma.book.findFirst.mockResolvedValue({ id: 1 });
+      isOwner.mockReturnValue(false); 
+
+      const req = { params: { bookId: 1 }, userId: 1 };
+      await deAssigne(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({ message: "User is not owner" });
+    });
+
     it('usuwa książkę jeśli user jest właścicielem', async () => {
       prisma.book.findFirst.mockResolvedValue({ id: 1 });
       isOwner.mockReturnValue(true);
