@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Book Note API",
-    "version": "1.0.1",
-    "description": "Endpoints for user registration, login, book management, and note handling."
+    "version": "1.1.0",
+    "description": "API for user registration, login, book management, and personal note handling."
   },
   "paths": {
     "/api/user/register": {
@@ -19,16 +19,16 @@
                 "required": ["username", "password", "secPassword"],
                 "properties": {
                   "username": { "type": "string" },
-                  "password": { "type": "string" },
-                  "secPassword": { "type": "string" }
+                  "password": { "type": "string", "format": "password" },
+                  "secPassword": { "type": "string", "format": "password" }
                 }
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "User created" },
-          "400": { "description": "Passwords don't match or don't meet requirements" },
+          "201": { "description": "User created successfully" },
+          "400": { "description": "Missing fields or invalid password format" },
           "409": { "description": "Username is already taken" }
         }
       }
@@ -46,7 +46,7 @@
                 "required": ["username", "password"],
                 "properties": {
                   "username": { "type": "string" },
-                  "password": { "type": "string" }
+                  "password": { "type": "string", "format": "password" }
                 }
               }
             }
@@ -55,24 +55,24 @@
         "responses": {
           "200": { "description": "Login successful" },
           "400": { "description": "Missing username or password" },
-          "401": { "description": "Invalid credentials" }
+          "401": { "description": "Invalid username or password" }
         }
       }
     },
     "/api/user": {
       "get": {
-        "summary": "Get current user info",
+        "summary": "Get current authenticated user",
         "tags": ["User"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "User info" },
+          "200": { "description": "User info retrieved successfully" },
           "401": { "description": "Unauthorized or invalid token" }
         }
       }
     },
     "/api/book/search/{title}": {
       "get": {
-        "summary": "Search for books by title",
+        "summary": "Search books by title",
         "tags": ["Books"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
@@ -84,15 +84,15 @@
           }
         ],
         "responses": {
-          "200": { "description": "Books found (sorted by popularity)" },
-          "400": { "description": "Missing title" },
-          "500": { "description": "Failed to fetch books from Google" }
+          "200": { "description": "Books found and sorted by rating count" },
+          "400": { "description": "Missing title parameter" },
+          "500": { "description": "Failed to fetch books from Google Books" }
         }
       }
     },
     "/api/book": {
       "post": {
-        "summary": "Assign a Google book to the user",
+        "summary": "Add a Google Book to user's collection",
         "tags": ["Books"],
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
@@ -111,27 +111,27 @@
         },
         "responses": {
           "201": { "description": "Book assigned to user" },
-          "400": { "description": "Missing or Wrong Google Book ID" },
-          "401": { "description": "Unauthorized or invalid token" },
-          "404": { "description": "Book not found" },
-          "409": { "description": "Book already added" }
+          "400": { "description": "Missing Google Book ID" },
+          "401": { "description": "Missing user ID or unauthorized" },
+          "404": { "description": "Book not found in Google Books" },
+          "409": { "description": "Book already exists in user's collection" }
         }
       }
     },
     "/api/book/dashboard": {
       "get": {
-        "summary": "Get all books added by the user",
+        "summary": "Retrieve user's saved book collection",
         "tags": ["Books"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "List of books (sorted by rating count)" },
-          "401": { "description": "Unauthorized" }
+          "200": { "description": "List of user books sorted by popularity" },
+          "401": { "description": "Unauthorized access" }
         }
       }
     },
     "/api/book/{bookId}": {
       "delete": {
-        "summary": "Remove a book from user's list",
+        "summary": "Remove a book from user's collection",
         "tags": ["Books"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
@@ -143,16 +143,17 @@
           }
         ],
         "responses": {
-          "200": { "description": "Book deleted" },
-          "403": { "description": "User is not owner" },
-          "404": { "description": "Book does not exist" },
-          "500": { "description": "Failed to delete book" }
+          "200": { "description": "Book removed successfully" },
+          "401": { "description": "Unauthorized access" },
+          "403": { "description": "User is not the owner of this book" },
+          "404": { "description": "Book not found" },
+          "500": { "description": "Internal error during deletion" }
         }
       }
     },
     "/api/note": {
       "put": {
-        "summary": "Edit a note for a book",
+        "summary": "Edit or update a note for a book",
         "tags": ["Notes"],
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
@@ -172,16 +173,16 @@
         },
         "responses": {
           "200": { "description": "Note updated successfully" },
-          "400": { "description": "Missing note content or bookId" },
-          "403": { "description": "User is not owner" },
-          "404": { "description": "Note not found" },
-          "401": { "description": "Missing user ID" }
+          "400": { "description": "Missing content or book ID" },
+          "401": { "description": "Unauthorized access" },
+          "403": { "description": "User is not the note owner" },
+          "404": { "description": "Note not found for the book" }
         }
       }
     },
     "/api/note/{bookId}": {
       "get": {
-        "summary": "Get a note for a specific book",
+        "summary": "Get note associated with a specific book",
         "tags": ["Notes"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
@@ -194,8 +195,8 @@
         ],
         "responses": {
           "200": { "description": "Note retrieved" },
-          "400": { "description": "Missing bookId parameter" },
-          "404": { "description": "Book or note not found" }
+          "400": { "description": "Missing bookId" },
+          "404": { "description": "Note or book not found" }
         }
       }
     }
@@ -210,8 +211,17 @@
     }
   },
   "tags": [
-    { "name": "User", "description": "User registration, login, and profile access" },
-    { "name": "Books", "description": "Search, assign, and manage user book collection" },
-    { "name": "Notes", "description": "Create and retrieve notes tied to users books" }
+    {
+      "name": "User",
+      "description": "User registration, login, and profile info"
+    },
+    {
+      "name": "Books",
+      "description": "Search, add, remove, and view user's books"
+    },
+    {
+      "name": "Notes",
+      "description": "Write and retrieve notes linked to user's books"
+    }
   ]
 }
