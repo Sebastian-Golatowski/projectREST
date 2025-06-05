@@ -46,10 +46,7 @@ export const userInfo = (req, res) => {
             username: payload.username,
         });
     } catch (err) {
-        return {
-            id: payload.id,
-            username: payload.username,
-        }
+        return res.status(401).json({ message: "Unauthorized" });
     }
 };
 
