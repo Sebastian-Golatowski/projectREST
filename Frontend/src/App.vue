@@ -30,10 +30,8 @@ export default {
           "Authorization": "Bearer " + localStorage.getItem('token') 
         }
       })
-      console.log(userResponse);
       
       if (userResponse.status == 401) {
-        console.log('pizda');
         
         localStorage.removeItem('token')
         this.$router.push('/login')
