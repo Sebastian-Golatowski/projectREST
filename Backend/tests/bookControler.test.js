@@ -115,7 +115,7 @@ describe('bookController', () => {
       await assigne(req, res);
 
       expect(prisma.book.create).toHaveBeenCalled();
-      expect(prisma.note.create).toHaveBeenCalled();
+      expect(prisma.note.createMany).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
     });
 

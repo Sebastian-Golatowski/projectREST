@@ -66,7 +66,7 @@ export const assigne = async (req, res) => {
         params: {
           key: process.env.GOOGLE_API_KEY,
         },
-        validateStatus: () => true, // Don't throw for non-2xx
+        validateStatus: () => true,
       });
     
       if (response.status === 200) {
@@ -86,7 +86,7 @@ export const assigne = async (req, res) => {
           },
         });
     
-        await prisma.note.create({
+        await prisma.note.createMany({
           data: {
             bookId: newBook.id,
             body: ""
