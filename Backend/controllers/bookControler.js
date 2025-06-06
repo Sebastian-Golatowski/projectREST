@@ -96,13 +96,11 @@ export const assigne = async (req, res) => {
         return res.status(201).json({ newBook });
     
       } else {
-        // Treat *any* non-200 as "not found"
         return res.status(404).json({ message: 'Book not found in Google Books' });
       }
     
     } catch (err) {
-      // Catch network errors, etc., and force 404
-      return res.status(404).json({ message: 'Book not found (network error)' });
+      return res.status(500).json({ message: 'Book not found (network error)' });
     }
   };
 

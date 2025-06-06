@@ -66,7 +66,7 @@
         "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": { "description": "User info retrieved successfully" },
-          "401": { "description": "Unauthorized or invalid token" }
+          "401": { "description": "Unauthenticated or invalid token" }
         }
       }
     },
@@ -112,9 +112,10 @@
         "responses": {
           "201": { "description": "Book assigned to user" },
           "400": { "description": "Missing Google Book ID" },
-          "401": { "description": "Missing user ID or unauthorized" },
+          "401": { "description": "Missing user ID or unauthenticated" },
           "404": { "description": "Book not found in Google Books" },
-          "409": { "description": "Book already exists in user's collection" }
+          "409": { "description": "Book already exists in user's collection" },
+          "500": { "description": "Error with Google API" }
         }
       }
     },
@@ -125,7 +126,7 @@
         "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": { "description": "List of user books sorted by popularity" },
-          "401": { "description": "Unauthorized access" }
+          "401": { "description": "unauthenticated access" }
         }
       }
     },
@@ -144,7 +145,7 @@
         ],
         "responses": {
           "200": { "description": "Book removed successfully" },
-          "401": { "description": "Unauthorized access" },
+          "401": { "description": "Unauthenticated access" },
           "403": { "description": "User is not the owner of this book" },
           "404": { "description": "Book not found" },
           "500": { "description": "Internal error during deletion" }
@@ -174,7 +175,7 @@
         "responses": {
           "200": { "description": "Note updated successfully" },
           "400": { "description": "Missing content or book ID" },
-          "401": { "description": "Unauthorized access" },
+          "401": { "description": "USer unauthenticated" },
           "403": { "description": "User is not the note owner" },
           "404": { "description": "Note not found for the book" }
         }
