@@ -86,7 +86,7 @@ export const assigne = async (req, res) => {
           },
         });
     
-        await prisma.note.create({
+        await prisma.note.createMany({
           data: {
             bookId: newBook.id,
             body: ""
