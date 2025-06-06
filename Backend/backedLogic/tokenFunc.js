@@ -41,12 +41,12 @@ export const tokenMiddleware = (req, res, next) => {
 export const userInfo = (req, res) => {
     try {
         const payload = tokenGetter(req, res);
-        return res.status(200).json({
+        return {
             id: payload.id,
             username: payload.username,
-        });
+        };
     } catch (err) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return {}
     }
 };
 

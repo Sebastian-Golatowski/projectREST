@@ -228,7 +228,9 @@ describe('me()', () => {
     await me(req, res);
 
     expect(userInfo).toHaveBeenCalledWith(req, res);
-    expect(res.status).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Unauthorized"
+    });
   });
 });

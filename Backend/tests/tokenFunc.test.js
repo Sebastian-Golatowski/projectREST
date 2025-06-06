@@ -104,26 +104,28 @@ describe('tokenFunc.js', () => {
   describe('userInfo()', () => {
     it('zwraca dane użytkownika jeśli token poprawny', () => {
       const req = { headers: { authorization: 'Bearer token' } };
-      const res = mockRes();
+      const res = {}; // no longer mocking res.json or res.status
       const payload = { id: 2, username: 'xyz' };
+    
       jest.spyOn(jwt, 'verify').mockReturnValue(payload);
-
+    
       const result = userInfo(req, res);
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(payload);
+
+      expect(result.id).toEqual(payload.id);
+      expect(result.username).toEqual(payload.username);
     });
 
-    it('zwraca 401 jeśli token nieprawidłowy', () => {
+    it('zwraca pusty obiekt jeśli token nieprawidłowy', () => {
       const req = { headers: { authorization: 'Bearer fail' } };
-      const res = mockRes();
+      const res = {}; // no need for mockRes now
       jest.spyOn(jwt, 'verify').mockImplementation(() => {
         throw new Error();
       });
-
+    
       const result = userInfo(req, res);
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid or expired token' });
-      expect(result).toEqual(res);
+    
+      expect(result).toEqual({});
+      expect(result.id).toBeUndefined();
     });
   });
 

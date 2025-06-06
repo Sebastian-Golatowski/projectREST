@@ -66,7 +66,7 @@ export const login = async (req, res) =>{
 
 export const me = async (req, res) =>{
   const {id, username} = await userInfo(req, res);
-  if(id == null ) return
+  if(id == null ) return res.status(401).json({ message: "Unauthorized" });
   
   return res.status(200).json({id, username})
 }
