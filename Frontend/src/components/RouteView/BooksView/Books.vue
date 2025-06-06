@@ -63,6 +63,7 @@ import { useBooksStorage } from '../../../storage/books';
     },
     async mounted() {
       this.getBooks()
+      this.books.setSelected({})
     },
     methods: {
       async getBooks() {
